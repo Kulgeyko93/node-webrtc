@@ -132,17 +132,14 @@ node_webrtc::GetUserMedia::GetUserMediaImpl(const Napi::CallbackInfo &info) {
           .FromMaybe(false);
 
   if (audio) {
-    cricket::AudioOptions options;
-    auto source = factory->factory()->CreateAudioSource(options);
-    auto track =
-        factory->factory()->CreateAudioTrack(rtc::CreateRandomUuid(), source);
+    auto source = new rtc::RefCountedObject<node_webrtc::RTCAudioTrackSource>();
+    auto track = factory->factory()->CreateAudioTrack(rtc::CreateRandomUuid(), source);
     stream->AddTrack(track);
   }
 
   if (video) {
     auto source = new rtc::RefCountedObject<node_webrtc::RTCVideoTrackSource>();
-    auto track =
-        factory->factory()->CreateVideoTrack(rtc::CreateRandomUuid(), source);
+    auto track = factory->factory()->CreateVideoTrack(rtc::CreateRandomUuid(), source);
     stream->AddTrack(track);
   }
 
